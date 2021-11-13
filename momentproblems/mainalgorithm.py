@@ -311,14 +311,10 @@ dimensions. ::
 """
 
 import itertools
-from momentproblems import intersections
-from momentproblems import moment_functionals
 from sage.all import matrix, vector, binomial, ZZ, sqrt, ProjectiveSpace, Polyhedron, real, imag, RDF, CDF
 import scipy.linalg
 import numpy as np
 from numpy.linalg import matrix_rank
-from momentproblems.commoneigenspaces import common_eigenspaces_numeric as common_eigenspaces
-from momentproblems.commoneigenspaces import common_eigenspaces_symbolic
 
 def _mk_shift_mat(basis_from, basis_to, K):
     r"""
@@ -334,6 +330,7 @@ def _mk_shift_mat(basis_from, basis_to, K):
 
 # TODO (here we work with d-δ,d instead of d,d+δ)
 def shift_invariant_eigenvalue_indices(Ur, eigspaces, d, δ, dim, tol, basis_fun, deg_fun):
+    from momentproblems import intersections
     K = Ur.base_ring()
     if any(Vj.base_ring() != K for Vj in eigspaces):
         raise ValueError("all matrices should be defined over same ring: %s" % K)
@@ -363,6 +360,7 @@ def shift_invariant_eigenvalue_indices(Ur, eigspaces, d, δ, dim, tol, basis_fun
 
 
 def eigenspaces_lifted(Ms, M=None, *, tol, convex=False, **kwds):
+    from momentproblems import intersections
     ker_M = intersections.null_space_intersection(*Ms, tol=tol)
 
     if ker_M.ncols() > 0:
@@ -395,11 +393,13 @@ def eigenspaces_lifted(Ms, M=None, *, tol, convex=False, **kwds):
         Δ = sum(Δs)
 
     if not ker_M.base_ring().is_exact():
-        QZs = sorted(common_eigenspaces(Δs, tol=tol, B=Δ, **kwds), key=lambda QZ: QZ[0].ncols(), reverse=True)
+        from momentproblems.commoneigenspaces import common_eigenspaces_numeric
+        QZs = sorted(common_eigenspaces_numeric(Δs, tol=tol, B=Δ, **kwds), key=lambda QZ: QZ[0].ncols(), reverse=True)
         # right eigenspaces, lifted from coordinate ring to ambient ring, including null space (polynomials in the ideal), lives in R_≤d
         V = [(Ur * Z).augment(ker_M) for Q, Z, aa in QZs]
         eigvals = [aa for Q, Z, aa in QZs]
     else:
+        from momentproblems.commoneigenspaces import common_eigenspaces_symbolic
         eZs = sorted(common_eigenspaces_symbolic(Δs, extend=False, multiplicities=True, B=Δ), key=lambda eZ: eZ[1].ncols(), reverse=True)
         V = [(Ur * Z).augment(ker_M) for aa, Z in eZs]
         eigvals = [aa for aa, Z in eZs]
@@ -416,6 +416,7 @@ def eigenvalues_from_indices(eigvals, indices, *, exact=False):
         return matrix.column([matrix(eigvals[j]).column(0).normalized() for j in indices])
 
 def _basis_data(torus=False):
+    from momentproblems import moment_functionals
     if torus:
         # maximal degree
         deg_max = lambda p: max(abs(a) for aa in p.exponents() for a in aa)

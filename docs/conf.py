@@ -218,3 +218,49 @@ epub_exclude_files = ['search.html']
 #     'doi': ('https://dx.doi.org/%s', 'doi:'),
 #     'mathscinet': ('http://www.ams.org/mathscinet-getitem?mr=%s', 'MathSciNet ')
 #     }
+
+
+# -- mock things from sage that are not accessible on readthedocs ------------
+# This solution is taken from
+# https://github.com/MCLF/mclf/blob/e1a0d23e3cfe7dc322766465aabae6f4773aba69/docs/conf.py#L341
+#
+# See also https://github.com/sagemath/sage_sample/issues/6
+# and https://github.com/sagemath/sage_sample/issues/6#issuecomment-327424472
+
+try:
+    import sage.all
+except ImportError:
+    # raise RuntimeError("to build the documentation you need to be inside a Sage shell (run first the command 'sage -sh' in a shell")
+    from unittest.mock import MagicMock
+
+    class SageObject: pass
+
+    class Infinity:
+        def __repr__(self): return "∞"
+
+    class ReprMock(MagicMock):
+        def __repr__(self):
+            raise NotImplemented("Do not use mocked objects, i.e., things coming from Sage as default arguments. Caching in Sage might produce surprising side effects, and it breaks printing of these things in the generated readthedocs documentation.")
+
+    class Mock(MagicMock):
+        @classmethod
+        def __getattr__(cls, name):
+            if name == "SageObject":
+                # Mock SageObject differently. Sphinx refuses to document
+                # things that inherit from a mock.
+                return SageObject
+            if name == "Infinity":
+                return Infinity()
+            return ReprMock()
+
+    MOCK_MODULES = [
+        'sage.all',
+    ]
+    # import works differently than "from … import". Therefore we need to mock all parent modules for monkey.py
+    MONKEY_MOCK_MODULES = [
+        'sage',
+        'sage.rings',
+        'sage.rings.polynomial',
+        'sage.rings.polynomial.multi_polynomial_sequence',
+    ]
+    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES + MONKEY_MOCK_MODULES)

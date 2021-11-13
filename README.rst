@@ -2,6 +2,10 @@
 ``momentproblems``
 ##################
 
+.. image:: https://readthedocs.org/projects/momentproblems/badge/?version=latest
+   :target: https://momentproblems.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 *******************************************
 Research code accompanying the thesis (tba)
 *******************************************
@@ -11,6 +15,11 @@ algorithms for:
 
 * parameter recovery of certain moment problems
 * generalized eigenvalues and eigenspaces of regular matrix pencils `(A_0,…,A_r)`
+
+Examples and documentation
+==========================
+
+See `https://momentproblems.readthedocs.io <momentproblems_rtd_>`_.
 
 Installation
 ============
@@ -33,3 +42,4 @@ access required), run::
 
 .. _SAGE: https://www.sagemath.org/
 .. _momentproblems_gh: https://github.com/mwageringel/momentproblems
+.. _momentproblems_rtd: https://momentproblems.readthedocs.io/en/latest/#documentation

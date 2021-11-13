@@ -1,5 +1,4 @@
 import itertools
-from momentproblems import intersections
 from sage.all import matrix, vector, binomial, ZZ, sqrt, ProjectiveSpace, RDF, exp, log, atan2, CDF, sin, cos
 from scipy.linalg import ordqz, eigvals, svdvals
 import numpy as np
