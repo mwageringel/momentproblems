@@ -1,0 +1,7 @@
+*.pyc
+/build/
+/docs/_build/
+/example*.pdf
+*.egg-info/
+*.dat
+*.sobj
