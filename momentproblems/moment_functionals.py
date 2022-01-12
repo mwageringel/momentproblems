@@ -265,8 +265,8 @@ def mk_moment_trigonometric_curve_example(c1, c2, *, prec=80):
     from sage.all import ComplexBallField, fast_callable, sqrt
     i = SR.I()
     t1 = SR.var('t1')
-    T2 = acos(-1 + 2*c1 / (cos(t1) + 1 + c2))
-    T1 = acos(-1 - c2 + 2*c1 / (cos(t1) + 1))  # t1, t2 coordinates swapped
+    T2 = acos(-1 + ZZ(2)*c1 / (cos(t1) + 1 + c2))
+    T1 = acos(-1 - c2 + ZZ(2)*c1 / (cos(t1) + 1))  # t1, t2 coordinates swapped
 
     KK = ComplexBallField(prec)
     gam = vector([exp(i*t1), exp(i * T2)])
@@ -288,8 +288,8 @@ def mk_moment_trigonometric_curve_example(c1, c2, *, prec=80):
             return north + south
 
     else:
-        t1_a = -acos(-c2/2 - 1 + 1/2*sqrt(8*c1+c2**2))
-        t1_b = acos(-c2/2 - 1 + 1/2*sqrt(8*c1+c2**2))
+        t1_a = -acos(-ZZ(1)/2*c2 - 1 + ZZ(1)/2*sqrt(8*c1+c2**2))
+        t1_b = acos(-ZZ(1)/2*c2 - 1 + ZZ(1)/2*sqrt(8*c1+c2**2))
         if KK(t1_a).is_NaN() or KK(t1_b).is_NaN():
             raise ValueError("parameter out of bounds")
 

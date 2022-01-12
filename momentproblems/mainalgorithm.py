@@ -293,7 +293,7 @@ dimensions. ::
     sage: λ = [K(ZZ.random_element(1,30)) for _ in range(r)]
     sage: import numpy as np
     sage: from momentproblems.commoneigenspaces import common_eigenspaces_symbolic
-    sage: t = sum(λ[j] * np.einsum('i,j,k->ijk', x[j].numpy(int), y[j].numpy(int), z[j].numpy(int)) for j in range(r))
+    sage: t = np.einsum('ja,jb,jc->abc', (matrix.diagonal(λ) * matrix(x)).numpy(int), matrix(y).numpy(int), matrix(z).numpy(int))
 
     sage: Xs = [matrix(K, np.ascontiguousarray(t[i,:,:])) for i in range(s)]
     sage: Vx, ev_x = eigenspaces_lifted(Xs, tol=None)[:2]
